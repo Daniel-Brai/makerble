@@ -37,7 +37,7 @@ git clone git@github.com:Daniel-Brai/makerble.git
 cd makerble
 ```
 
-2. Set up environment variables:
+2. Set up environment variables (Optional):
 
 ```bash
 cp .env.example .env
