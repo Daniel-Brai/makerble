@@ -1,0 +1,23 @@
+# Binary files
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Environment files
+.env
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test files
+*.test
+*.out
+
+# Temporary files
+tmp/
