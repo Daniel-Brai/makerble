@@ -1,0 +1,94 @@
+# Makerble Medical System API
+
+A REST API for managing a medical clinic system with doctors, receptionists, and patients.
+
+## Features
+
+- User authentication (login/logout)
+- Role-based access control (Doctors and Receptionists)
+- Patient management
+  - Create patients (Receptionists only)
+  - List all patients
+  - Get patient details
+  - Update patient information (Receptionists only)
+  - Update medical history (Doctors only)
+  - Delete patients (Receptionists only)
+
+## Tech Stack
+
+- Go 1.24.1
+- PostgreSQL
+- Chi Router
+- JWT Authentication
+- Swagger/OpenAPI Documentation
+
+## Prerequisites
+
+- Go 1.24.1 or higher
+- PostgreSQL
+- Make
+
+## Getting Started
+
+1. Clone the repository:
+
+```bash
+git clone git@github.com:Daniel-Brai/makerble.git
+cd makerble
+```
+
+2. Set up environment variables:
+
+```bash
+cp .env.example .env
+# Edit .env with your database credentials
+```
+
+3. Run database migrations:
+
+```bash
+make migrate-up
+```
+
+4. Build and run the application:
+
+```bash
+go run cmd/api/main.go
+```
+
+The API will be available at `http://localhost:5000/api/v1`
+
+## API Documentation
+
+The API documentation is available via Swagger UI at:
+
+```
+http://localhost:5000/swagger/index.html
+```
+
+To regenerate Swagger documentation after making changes:
+
+```bash
+make swagger
+```
+
+## Development
+
+For hot-reloading during development:
+
+```bash
+air
+```
+
+## Available Make Commands
+
+- `make migrate-create name=<migration_name>` - Create a new migration
+- `make migrate-up` - Run all pending migrations
+- `make migrate-down` - Roll back the last migration
+- `make migrate-force version=<version>` - Force migration version
+- `make migrate-version` - Show current migration version
+- `make swagger` - Generate Swagger documentation
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE-MIT](LICENSE-MIT) file for details.
