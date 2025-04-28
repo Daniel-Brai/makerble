@@ -81,10 +81,30 @@ make swagger
 
 ## Development
 
+### Local Development
+
 For hot-reloading during development:
 
 ```bash
 air
+```
+
+### Docker Development
+
+To run the application in development mode with Docker:
+
+```bash
+# Build the development image
+docker build -f Dockerfile.dev -t makerble-dev .
+
+# Run the container
+docker run -p 5000:5000 -v $(pwd):/app makerble-dev
+```
+
+Or using docker-compose:
+
+```bash
+docker-compose -f docker-compose.dev.yml up
 ```
 
 ## Available Make Commands

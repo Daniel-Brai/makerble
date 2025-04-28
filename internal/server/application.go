@@ -3,6 +3,9 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -28,6 +31,27 @@ func NewApplication(cfg *config.Config, repo repository.RepoStorage, jwtManager 
 		Repo:       repo,
 		JWTManager: jwtManager,
 	}
+}
+
+func GetProjectRoot() (string, error) {
+    _, filename, _, ok := runtime.Caller(0)
+    if !ok {
+        return "", fmt.Errorf("failed to get current file path")
+    }
+    
+    dir := filepath.Dir(filename)
+    
+    for {
+        if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+            return dir, nil
+        }
+        
+        parent := filepath.Dir(dir)
+        if parent == dir {
+            return "", fmt.Errorf("go.mod not found")
+        }
+        dir = parent
+    }
 }
 
 func (a *Application) Mount() http.Handler {
