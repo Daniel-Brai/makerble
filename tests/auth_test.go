@@ -25,7 +25,7 @@ func TestLoginHandler(t *testing.T) {
 		UserType: models.Doctor,
 	}
 
-	resp := testutils.MakeRequest(t, ts, http.MethodPost, "/v1/register", registerUser, "")
+	resp := testutils.MakeRequest(t, ts, http.MethodPost, "/api/v1/register", registerUser, "")
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
 
 	tests := []struct {
