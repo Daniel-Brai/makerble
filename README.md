@@ -10,8 +10,8 @@ A REST API for managing a medical clinic system with doctors, receptionists, and
   - Create patients (Receptionists only)
   - List all patients
   - Get patient details
-  - Update patient information (Receptionists only)
-  - Update medical history (Doctors only)
+  - Update patient basic information (Receptionists only)
+  - Update patients fully (Doctors only)
   - Delete patients (Receptionists only)
 
 ## Tech Stack
@@ -57,6 +57,13 @@ go run cmd/api/main.go
 ```
 
 The API will be available at `http://localhost:5000/api/v1`
+
+## Demo
+
+
+https://github.com/user-attachments/assets/eaf3ff38-c2f1-4879-98f5-67a8a4db0d46
+
+
 
 ## API Documentation
 
