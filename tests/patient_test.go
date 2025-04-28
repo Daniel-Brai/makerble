@@ -54,14 +54,14 @@ func TestCreatePatientHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp := testutils.MakeRequest(t, ts, "POST", "/v1/patients", tt.body, tt.token)
+			resp := testutils.MakeRequest(t, ts, "POST", "/api/v1/patients", tt.body, tt.token)
 			assert.Equal(t, tt.expectedCode, resp.StatusCode)
 
 			if tt.expectedCode == http.StatusCreated {
 				var response map[string]string
 				err := json.NewDecoder(resp.Body).Decode(&response)
 				require.NoError(t, err)
-				assert.NotEmpty(t, response["id"])
+				assert.NotEmpty(t, response["patient_id"])
 			}
 		})
 	}
