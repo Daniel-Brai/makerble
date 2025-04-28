@@ -68,15 +68,15 @@ func (a *Application) Mount() http.Handler {
 				// Receptionist only routes
 				r.Group(func(r chi.Router) {
 					r.Use(a.receptionistOnly)
-					r.Post("/", a.createPatientHandler)
-					r.Put("/{id}", a.updatePatientHandler)
+					r.Put("/{id}", a.updatePatientLimitedHandler)
 					r.Delete("/{id}", a.deletePatientHandler)
 				})
 
 				// Doctor only routes
 				r.Group(func(r chi.Router) {
 					r.Use(a.doctorOnly)
-					r.Patch("/{id}", a.updatePatientMedicalInfoHandler)
+					r.Post("/", a.createPatientHandler)
+					r.Patch("/{id}", a.updatePatientHandler)
 				})
 			})
 		})

@@ -36,23 +36,24 @@ func NewMockRepoStorage() repository.RepoStorage {
 	}
 }
 
-func (m *MockPatientRepo) Create(ctx context.Context, userID uuid.UUID, patient *schemas.PatientCreate) (string, error) {
+func (m *MockPatientRepo) Create(ctx context.Context, userID uuid.UUID, patient *schemas.PatientCreate, createdAt time.Time) (string, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
 	id := uuid.New()
+	dob, _ := time.Parse(patient.DateOfBirth, "2006-01-02")
 	m.patients[id] = &models.Patient{
 		ID:             id,
 		FullName:       patient.FullName,
-		DateOfBirth:    patient.DateOfBirth,
 		Gender:         patient.Gender,
 		Address:        patient.Address,
+		DateOfBirth:    dob,
 		Phone:          patient.Phone,
 		Email:          patient.Email,
 		MedicalHistory: patient.MedicalHistory,
 		RegisteredBy:   userID,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
+		CreatedAt:      createdAt,
+		UpdatedAt:      createdAt,
 	}
 	return id.String(), nil
 }

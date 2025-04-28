@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/yhwbach/makerble/internal/models"
@@ -14,10 +15,10 @@ type PatientRepoStorage struct {
 }
 
 // Create inserts a new patient into the database.
-func (p *PatientRepoStorage) Create(ctx context.Context, userID uuid.UUID, patient *schemas.PatientCreate) (string, error) {
+func (p *PatientRepoStorage) Create(ctx context.Context, userID uuid.UUID, patient *schemas.PatientCreate, dateOfBirth time.Time) (string, error) {
 	patientModel := &models.Patient{
 		FullName:       patient.FullName,
-		DateOfBirth:    patient.DateOfBirth,
+		DateOfBirth:    dateOfBirth,
 		Gender:         patient.Gender,
 		Address:        patient.Address,
 		Phone:          patient.Phone,

@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -17,13 +18,21 @@ import (
 // @Produce json
 // @Security BearerAuth
 // @Param patient body schemas.PatientCreate true "Patient information"
-// @Success 201 {object} models.Patient
+// @Success 201 {object} schemas.PatientCreateResponse
 // @Failure 400,403 {object} ErrorResponse
 // @Router /patients [post]
 func (a *Application) createPatientHandler(w http.ResponseWriter, r *http.Request) {
 	var patient schemas.PatientCreate
 	if err := json.NewDecoder(r.Body).Decode(&patient); err != nil {
+		println("Error decoding request body:", err)
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+
+	// Parse date of birth
+	dateOfBirth, err := time.Parse("2006-01-02", patient.DateOfBirth)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid date format. Use YYYY-MM-DD")
 		return
 	}
 
@@ -39,13 +48,18 @@ func (a *Application) createPatientHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	patientID, err := a.Repo.Patients.Create(r.Context(), registeredByID, &patient)
+	// Create a modified patient with the parsed date
+	patientToCreate := patient
+	patientID, err := a.Repo.Patients.Create(r.Context(), registeredByID, &patientToCreate, dateOfBirth)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error creating patient")
 		return
 	}
 
-	respondWithJSON(w, http.StatusCreated, map[string]string{"id": patientID})
+	respondWithJSON(w, http.StatusCreated, schemas.PatientCreateResponse{
+		Message:   "Patient created successfully",
+		PatientID: patientID,
+	})
 }
 
 // @Summary List patients
@@ -67,7 +81,7 @@ func (a *Application) listPatientsHandler(w http.ResponseWriter, r *http.Request
 	respondWithJSON(w, http.StatusOK, schemas.PatientListResponse{
 		Patients: patients,
 		Total:    len(patients),
-		Page:     1, 
+		Page:     1,
 		PageSize: 10,
 	})
 }
@@ -113,7 +127,7 @@ func (a *Application) getPatientHandler(w http.ResponseWriter, r *http.Request) 
 // @Success 200 {object} models.Patient
 // @Failure 400,403,404,500 {object} ErrorResponse
 // @Router /patients/{id} [put]
-func (a *Application) updatePatientHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) updatePatientLimitedHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid patient ID")
@@ -126,7 +140,14 @@ func (a *Application) updatePatientHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	patient, err := a.Repo.Patients.UpdateByID(r.Context(), id, &update)
+	limitedUpdate := schemas.PatientUpdate{
+		FullName:       update.FullName,
+		Email:         update.Email,
+		Phone:         update.Phone,
+		Address:       update.Address,
+	}
+
+	patient, err := a.Repo.Patients.UpdateByID(r.Context(), id, &limitedUpdate)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error updating patient")
 		return
@@ -150,7 +171,7 @@ func (a *Application) updatePatientHandler(w http.ResponseWriter, r *http.Reques
 // @Success 200 {object} models.Patient
 // @Failure 400,403,404,500 {object} ErrorResponse
 // @Router /patients/{id} [patch]
-func (a *Application) updatePatientMedicalInfoHandler(w http.ResponseWriter, r *http.Request) {
+func (a *Application) updatePatientHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid patient ID")
@@ -163,12 +184,7 @@ func (a *Application) updatePatientMedicalInfoHandler(w http.ResponseWriter, r *
 		return
 	}
 
-	// Only allow updating medical history
-	limitedUpdate := schemas.PatientUpdate{
-		MedicalHistory: update.MedicalHistory,
-	}
-
-	patient, err := a.Repo.Patients.UpdateByID(r.Context(), id, &limitedUpdate)
+	patient, err := a.Repo.Patients.UpdateByID(r.Context(), id, &update)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error updating patient medical info")
 		return

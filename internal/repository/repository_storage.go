@@ -19,7 +19,7 @@ type RepoStorage struct {
 
 // PatientRepoStorage is a struct that implements the PatientRepository interface.
 type PatientRepository interface {
-	Create(context.Context, uuid.UUID, *schemas.PatientCreate) (string, error)
+	Create(context.Context, uuid.UUID, *schemas.PatientCreate, time.Time) (string, error)
 	FindAll(context.Context) ([]schemas.Patients, error) // Changed return type
 	FindByID(context.Context, uuid.UUID) (*models.Patient, error)
 	FindByEmail(context.Context, string) (*models.Patient, error)

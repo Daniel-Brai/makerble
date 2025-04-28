@@ -32,7 +32,7 @@ func TestCreatePatientHandler(t *testing.T) {
 			name: "valid patient creation",
 			body: schemas.PatientCreate{
 				FullName:    "John Doe",
-				DateOfBirth: time.Now().AddDate(-30, 0, 0),
+				DateOfBirth: time.Now().AddDate(-30, 0, 0).Format("2006-01-02"),
 				Gender:      models.Male,
 				Email:       "john@example.com",
 			},
@@ -43,7 +43,7 @@ func TestCreatePatientHandler(t *testing.T) {
 			name: "unauthorized access",
 			body: schemas.PatientCreate{
 				FullName:    "John Doe",
-				DateOfBirth: time.Now().AddDate(-30, 0, 0),
+				DateOfBirth: time.Now().AddDate(-30, 0, 0).Format("2006-01-02"),
 				Gender:      models.Male,
 				Email:       "john@example.com",
 			},

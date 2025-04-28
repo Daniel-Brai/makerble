@@ -1,15 +1,13 @@
 package schemas
 
 import (
-	"time"
-
 	"github.com/yhwbach/makerble/internal/models"
 )
 
 // PatientCreate represents a request to create a new patient
 type PatientCreate struct {
 	FullName       string        `json:"full_name"`
-	DateOfBirth    time.Time     `json:"date_of_birth"` // Format: YYYY-MM-DD
+	DateOfBirth    string        `json:"date_of_birth"` // Format: YYYY-MM-DD
 	Gender         models.Gender `json:"gender"`
 	Address        string        `json:"address"`
 	Phone          string        `json:"phone"`
@@ -35,9 +33,9 @@ type PaginationQuery struct {
 
 type PatientListResponse struct {
 	Patients []Patients `json:"patients"`
-	Total    int                       `json:"total"`
-	Page     int                       `json:"page"`
-	PageSize int                       `json:"page_size"`
+	Total    int        `json:"total"`
+	Page     int        `json:"page"`
+	PageSize int        `json:"page_size"`
 }
 
 type Patients struct {
@@ -46,4 +44,9 @@ type Patients struct {
 		ID       string `json:"id"`
 		FullName string `json:"full_name"`
 	} `json:"registered_by_user"`
+}
+
+type PatientCreateResponse struct {
+	Message string `json:"message"`
+	PatientID string `json:"patient_id"`
 }
